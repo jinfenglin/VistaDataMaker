@@ -2,7 +2,6 @@ import os
 import re
 import argparse
 import git as local_git  # pip install GitPython
-import pandas as pd1
 
 
 class MyCommit:
@@ -35,6 +34,7 @@ class RepoCollector:
         if not os.path.exists(clone_path):
             local_git.Repo.clone_from(repo_url, clone_path, branch='master')
         local_repo = local_git.Repo(clone_path)
+        print("repo have been downloaded...")
 
         commit_file_path = os.path.join(self.output_dir, "commit.csv")
         if not os.path.isfile(commit_file_path):
@@ -47,7 +47,7 @@ class RepoCollector:
                     summary = commit.summary
                     create_time = commit.committed_datetime
                     author = commit.author
-                    files = commit.stats.files
+                    files = list(commit.stats.files.keys())
                     commit = MyCommit(id, summary, files, create_time, author)
                     fout.write(str(commit))
 
