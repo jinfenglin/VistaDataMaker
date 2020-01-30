@@ -35,7 +35,6 @@ class RepoCollector:
             local_git.Repo.clone_from(repo_url, clone_path, branch='master')
         local_repo = local_git.Repo(clone_path)
         print("repo have been downloaded...")
-
         commit_file_path = os.path.join(self.output_dir, "commit.csv")
         if not os.path.isfile(commit_file_path):
             print("creating commit.csv...")
@@ -48,6 +47,7 @@ class RepoCollector:
                     create_time = commit.committed_datetime
                     author = commit.author
                     files = list(commit.stats.files.keys())
+                    files = [os.path.basename(f) for f in files]
                     commit = MyCommit(id, summary, files, create_time, author)
                     fout.write(str(commit))
 
@@ -65,4 +65,3 @@ if __name__ == "__main__":
         rpc = RepoCollector(user_name=args.u, passwd=args.p, download_path=args.d,
                             repo_path=repo_path, output_dir=args.o)
         rpc.run()
-
